@@ -1,8 +1,4 @@
-/**
- * Copyright (c) 2006-2017, JGraph Ltd
- * Copyright (c) 2006-2017, Gaudenz Alder
- */
-//Add a closure to hide the class private variables without changing the code a lot
+
 (function ()
 {
 
