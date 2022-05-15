@@ -1,7 +1,3 @@
-/**
- * Copyright (c) 2006-2017, JGraph Ltd
- * Copyright (c) 2006-2017, Gaudenz Alder
- */
 AWSFile = function(ui, data, meta)
 {
 	DrawioFile.call(this, ui, data);
