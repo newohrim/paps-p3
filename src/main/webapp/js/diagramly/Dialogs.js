@@ -261,6 +261,11 @@ var StorageDialog = function(editorUi, fn, rowLimit)
 		{
 			addLogo(IMAGE_PATH + '/gitlab-logo.svg', mxResources.get('gitlab'), App.MODE_GITLAB, 'gitLab');
 		}
+
+		if (editorUi.s3 != null)
+		{
+			addLogo(IMAGE_PATH + '/s3-logo.svg', mxResources.get('s3'), App.MODE_S3, 's3');
+		}
 	};
 	
 	div.appendChild(buttons);
@@ -383,6 +388,11 @@ var SplashDialog = function(editorUi)
 	{
 		logo.src = IMAGE_PATH + '/trello-logo.svg';
 		service = mxResources.get('trello');
+	}
+	else if (editorUi.mode == App.MODE_S3)
+	{
+		logo.src = IMAGE_PATH + '/s3-logo.svg';
+		service = mxResources.get('s3');
 	}
 	else
 	{
@@ -2728,6 +2738,10 @@ var NewDialog = function(editorUi, compact, showName, callback, createOnly, canc
 	{
 		logo.src = IMAGE_PATH + '/osa_database.png';
 	}
+	else if (editorUi.mode == App.MODE_S3)
+	{
+		logo.src = IMAGE_PATH + '/s3-logo.svg';
+	}
 	else
 	{
 		logo.src = IMAGE_PATH + '/osa_drive-harddisk.png';
@@ -4460,6 +4474,16 @@ var CreateDialog = function(editorUi, title, createFn, cancelFn, dlgTitle, btnLa
 			addLogo(IMAGE_PATH + '/gitlab-logo.svg', mxResources.get('gitlab'), App.MODE_GITLAB, 'gitLab');
 		}
 
+		if (editorUi.s3 != null)
+		{
+			var s3Option = document.createElement('option');
+			s3Option.setAttribute('value', App.MODE_S3);
+			mxUtils.write(s3Option, mxResources.get('s3'));
+			serviceSelect.appendChild(s3Option);
+
+			addLogo(IMAGE_PATH + '/s3-logo.svg', mxResources.get('s3'), App.MODE_S3, 's3');
+		}
+
 		if (typeof window.TrelloClient === 'function')
 		{
 			var trelloOption = document.createElement('option');
@@ -5570,6 +5594,28 @@ var LinkDialog = function(editorUi, initialValue, btnLabel, fn, showPages, showN
 	if (editorUi.gitLab != null)
 	{
 		addButton(IMAGE_PATH + '/gitlab-logo.svg', mxResources.get('gitlab'), function()
+		{
+			editorUi.gitLab.pickFile(function(path)
+			{
+				if (path != null)
+				{
+					var tokens = path.split('/');
+					var org = tokens[0];
+					var repo = tokens[1];
+					var ref = tokens[2];
+					var path = tokens.slice(3, tokens.length).join('/');
+
+					linkInput.value = DRAWIO_GITLAB_URL + '/' + org + '/' +
+						repo + '/blob/' + ref + '/' + path;
+					linkInput.focus();
+				}
+			});
+		});
+	}
+
+	if (editorUi.s3 != null)
+	{
+		addButton(IMAGE_PATH + '/s3-logo.svg', mxResources.get('s3'), function()
 		{
 			editorUi.gitLab.pickFile(function(path)
 			{
@@ -7976,6 +8022,12 @@ var AuthDialog = function(editorUi, peer, showRememberOption, fn)
 	{
 		service = mxResources.get('gitlab');
 		img.src = IMAGE_PATH + '/gitlab-logo.svg';
+		img.style.width = '32px';
+	}
+	else if (peer == editorUi.s3)
+	{
+		service = mxResources.get('s3');
+		img.src = IMAGE_PATH + '/s3-logo.svg';
 		img.style.width = '32px';
 	}
 	else if (peer == editorUi.trello)
@@ -11998,6 +12050,11 @@ var BtnDialog = function(editorUi, peer, btnLbl, fn)
 	{
 		service = mxResources.get('gitlab');
 		img.src = IMAGE_PATH + '/gitlab-logo.svg';
+	}
+	else if (peer == editorUi.s3)
+	{
+		service = mxResources.get('s3');
+		img.src = IMAGE_PATH + '/s3-logo.svg';
 	}
 	else if (peer == editorUi.trello)
 	{
