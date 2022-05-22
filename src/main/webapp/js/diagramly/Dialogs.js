@@ -133,6 +133,20 @@ var StorageDialog = function(editorUi, fn, rowLimit)
 						editorUi.handleError(err);
 					});
 				}
+				else if (mode == App.MODE_AWS && editorUi.spinner.spin(document.body, mxResources.get('authorizing')))
+				{
+					// Tries immediate authentication
+					editorUi.oneDrive.checkToken(mxUtils.bind(this, function()
+					{
+						editorUi.spinner.stop();
+						editorUi.setMode(mode, true);
+						fn();
+					}), function(err)
+					{
+						editorUi.spinner.stop();
+						editorUi.handleError(err);
+					});
+				}
 				else
 				{
 					editorUi.setMode(mode, true);
@@ -216,6 +230,11 @@ var StorageDialog = function(editorUi, fn, rowLimit)
 		if (typeof window.OneDriveClient === 'function')
 		{
 			addLogo(IMAGE_PATH + '/onedrive-logo.svg', mxResources.get('oneDrive'), App.MODE_ONEDRIVE, 'oneDrive');
+		}
+		
+		if (typeof window.AWSClient === 'function')
+		{
+			addLogo(IMAGE_PATH + '/aws-s3-logo.png', mxResources.get('awsS3'), App.MODE_AWS, 'awsS3');
 		}
 	
 		if (urlParams['noDevice'] != '1')
@@ -329,6 +348,11 @@ var SplashDialog = function(editorUi)
 	{
 		logo.src = IMAGE_PATH + '/google-drive-logo.svg';
 		service = mxResources.get('googleDrive');
+	}
+	else if (editorUi.mode == App.MODE_AWS)
+	{
+		logo.src = IMAGE_PATH + '/aws-s3-logo.png';
+		service = mxResources.get('awsS3');
 	}
 	else if (editorUi.mode == App.MODE_DROPBOX)
 	{
@@ -456,6 +480,10 @@ var SplashDialog = function(editorUi)
 	if (editorUi.mode == App.MODE_GOOGLE)
 	{
 		storage = mxResources.get('googleDrive');
+	}
+	else if (editorUi.mode == App.MODE_DROPBOX)
+	{
+		storage = mxResources.get('awsS3');
 	}
 	else if (editorUi.mode == App.MODE_DROPBOX)
 	{
@@ -587,6 +615,13 @@ var SplashDialog = function(editorUi)
 					editorUi.drive.logout();
 				});
 			}
+		}
+		else if (editorUi.mode == App.MODE_AWS && editorUi.aws != null)
+		{
+			addLogout(function()
+			{
+				editorUi.aws.logout();
+			});
 		}
 		else if (editorUi.mode == App.MODE_ONEDRIVE && editorUi.oneDrive != null && !editorUi.oneDrive.noLogout)
 		{
@@ -2665,6 +2700,10 @@ var NewDialog = function(editorUi, compact, showName, callback, createOnly, canc
 	{
 		logo.src = IMAGE_PATH + '/google-drive-logo.svg';
 	}
+	else if (editorUi.mode == App.MODE_AWS)
+	{
+		logo.src = IMAGE_PATH + '/aws-s3-logo.png';
+	}
 	else if (editorUi.mode == App.MODE_DROPBOX)
 	{
 		logo.src = IMAGE_PATH + '/dropbox-logo.svg';
@@ -2710,6 +2749,10 @@ var NewDialog = function(editorUi, compact, showName, callback, createOnly, canc
 	if (editorUi.mode == App.MODE_GOOGLE && editorUi.drive != null)
 	{
 		ext = editorUi.drive.extension;
+	}
+	else if (editorUi.mode == App.MODE_AWS && editorUi.aws != null)
+	{
+		ext = editorUi.aws.extension;
 	}
 	else if (editorUi.mode == App.MODE_DROPBOX && editorUi.dropbox != null)
 	{
@@ -4355,6 +4398,16 @@ var CreateDialog = function(editorUi, title, createFn, cancelFn, dlgTitle, btnLa
 			serviceSelect.appendChild(googleOption);
 			
 			addLogo(IMAGE_PATH + '/google-drive-logo.svg', mxResources.get('googleDrive'), App.MODE_GOOGLE, 'drive');
+		}
+		
+		if (typeof window.AWSClient === 'function')
+		{
+			var awsS3Option = document.createElement('option');
+			awsS3Option.setAttribute('value', App.MODE_AWS);
+			mxUtils.write(awsS3Option, mxResources.get('awsS3'));
+			serviceSelect.appendChild(awsS3Option);
+			
+			addLogo(IMAGE_PATH + '/aws-s3-logo.png', mxResources.get('awsS3'), App.MODE_AWS, 'awsS3');
 		}
 		
 		if (typeof window.OneDriveClient === 'function')
@@ -7898,6 +7951,11 @@ var AuthDialog = function(editorUi, peer, showRememberOption, fn)
 	{
 		service = mxResources.get('googleDrive');
 		img.src = IMAGE_PATH + '/google-drive-logo-white.svg';
+	}
+	else if (peer == editorUi.aws)
+	{
+		service = mxResources.get('awsS3');
+		img.src = IMAGE_PATH + '/aws-s3-logo.png';
 	}
 	else if (peer == editorUi.dropbox)
 	{
@@ -11915,6 +11973,11 @@ var BtnDialog = function(editorUi, peer, btnLbl, fn)
 	{
 		service = mxResources.get('googleDrive');
 		img.src = IMAGE_PATH + '/google-drive-logo-white.svg';
+	}
+	else if (peer == editorUi.aws)
+	{
+		service = mxResources.get('awsS3');
+		img.src = IMAGE_PATH + '/aws-s3-logo.png';
 	}
 	else if (peer == editorUi.dropbox)
 	{

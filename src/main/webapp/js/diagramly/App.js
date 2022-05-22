@@ -196,6 +196,11 @@ App.ERROR_BUSY = 'busy';
 App.ERROR_UNKNOWN = 'unknown';
 
 /**
+ * AWS mode
+ */
+App.MODE_AWS = 'aws';
+
+/**
  * Google drive mode
  */
 App.MODE_GOOGLE = 'google';
