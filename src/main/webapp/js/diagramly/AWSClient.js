@@ -31,7 +31,7 @@ AWSClient.prototype.baseUrl = DRAWIO_GITHUB_API_URL;
 
 AWSClient.prototype.baseHostUrl = DRAWIO_GITHUB_URL;
 
-AWSClient.prototype.redirectUri = window.location.protocol + '//' + window.location.host + '/github2';
+AWSClient.prototype.redirectUri = window.location.protocol + '//' + window.location.host + '/awsS3';
 
 /**
  * Maximum file size of the GitHub REST API.

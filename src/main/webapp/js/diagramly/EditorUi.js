@@ -14084,6 +14084,11 @@
 		{
 			serviceCount++
 		}
+		
+		if	(this.aws != null || typeof window.DropboxClient === 'function')
+		{
+			serviceCount++
+		}
 
 		if (this.oneDrive != null || typeof window.OneDriveClient === 'function')
 		{
